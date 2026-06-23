@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id          String               @id @default(cuid())
+  email       String               @unique
+  name        String
+  password    String
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  memberships OrganizationMember[]
+}
+
+model Organization {
+  id           String               @id @default(cuid())
+  name         String
+  slug         String               @unique
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  members      OrganizationMember[]
+  projects     Project[]
+  transactions Transaction[]
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  role           String       // "ADMIN", "MANAGER", "STAFF"
+  userId         String
+  organizationId String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([userId, organizationId])
+}
+
+model Project {
+  id             String       @id @default(cuid())
+  name           String
+  description    String?
+  status         String       // "PLANNING", "IN_PROGRESS", "COMPLETED", "ON_HOLD"
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model Transaction {
+  id             String       @id @default(cuid())
+  type           String       // "INCOME", "EXPENSE"
+  amount         Float
+  description    String
+  date           DateTime     @default(now())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
