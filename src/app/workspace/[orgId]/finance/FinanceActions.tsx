@@ -4,7 +4,8 @@ import React from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
-import { Download, FileSpreadsheet, FileText } from "lucide-react";
+import { FileSpreadsheet, FileText } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface Transaction {
   id: string;
@@ -137,21 +138,25 @@ export default function FinanceActions({ transactions, orgName }: FinanceActions
 
   return (
     <div className="flex gap-2 font-sans">
-      <button
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         onClick={handleExportPDF}
-        className="h-10 px-4 bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-semibold rounded-xl flex items-center gap-2 transition-all cursor-pointer"
+        className="h-10 px-4 bg-slate-900/60 border border-white/5 hover:border-white/10 hover:bg-slate-900 text-slate-200 text-xs font-semibold rounded-xl flex items-center gap-2 transition-all cursor-pointer backdrop-blur-sm"
       >
         <FileText className="h-4 w-4 text-red-400" />
         Ekspor PDF
-      </button>
+      </motion.button>
 
-      <button
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         onClick={handleExportExcel}
-        className="h-10 px-4 bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-semibold rounded-xl flex items-center gap-2 transition-all cursor-pointer"
+        className="h-10 px-4 bg-slate-900/60 border border-white/5 hover:border-white/10 hover:bg-slate-900 text-slate-200 text-xs font-semibold rounded-xl flex items-center gap-2 transition-all cursor-pointer backdrop-blur-sm"
       >
         <FileSpreadsheet className="h-4 w-4 text-emerald-400" />
         Ekspor Excel
-      </button>
+      </motion.button>
     </div>
   );
 }

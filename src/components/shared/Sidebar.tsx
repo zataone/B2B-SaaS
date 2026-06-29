@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import OrgSwitcher from "./OrgSwitcher";
 import { logoutAction } from "@/app/actions/auth";
+import { motion } from "framer-motion";
 
 interface SidebarProps {
   orgId: string;
@@ -57,17 +58,22 @@ export default function Sidebar({ orgId, orgName, organizations }: SidebarProps)
   ];
 
   return (
-    <aside className="w-64 bg-slate-950 border-r border-slate-900 flex flex-col h-screen sticky top-0 shrink-0 font-sans">
+    <aside className="w-64 bg-slate-950/40 border-r border-white/5 flex flex-col h-screen sticky top-0 shrink-0 font-sans backdrop-blur-xl z-20">
       {/* Brand logo */}
-      <div className="h-16 px-6 border-b border-slate-900/80 flex items-center gap-2.5">
-        <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-blue-600 to-violet-600 flex items-center justify-center shadow shadow-blue-500/10">
+      <div className="h-16 px-6 border-b border-white/5 flex items-center gap-2.5">
+        <motion.div
+          whileHover={{ rotate: 15 }}
+          className="h-8 w-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center shadow shadow-blue-500/10"
+        >
           <Activity className="h-4.5 w-4.5 text-white" />
-        </div>
-        <span className="font-bold text-lg text-white tracking-tight">SaaS Workspace</span>
+        </motion.div>
+        <span className="font-bold text-base text-white tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+          SaaS Workspace
+        </span>
       </div>
 
       {/* Org Switcher */}
-      <div className="p-4 border-b border-slate-900/60">
+      <div className="p-4 border-b border-white/5">
         <OrgSwitcher
           currentOrgId={orgId}
           currentOrgName={orgName}
@@ -85,29 +91,45 @@ export default function Sidebar({ orgId, orgName, organizations }: SidebarProps)
             <Link
               key={item.name}
               href={item.href}
-              className={`flex items-center gap-3 h-10 px-3 rounded-lg text-sm transition-all ${
-                isActive
-                  ? "bg-blue-600/10 text-blue-400 font-semibold"
-                  : "text-slate-400 hover:text-white hover:bg-slate-900/60"
-              }`}
+              className="relative flex items-center gap-3 h-10 px-3 rounded-lg text-sm transition-all cursor-pointer group"
             >
-              <Icon className={`h-4.5 w-4.5 ${isActive ? "text-blue-400" : "text-slate-400 group-hover:text-white"}`} />
-              {item.name}
+              {/* Active Indicator Background */}
+              {isActive && (
+                <motion.div
+                  layoutId="activeNav"
+                  className="absolute inset-0 bg-blue-600/10 border-l-2 border-blue-500 rounded-lg"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+              <Icon
+                className={`h-4.5 w-4.5 z-10 transition-colors ${
+                  isActive ? "text-blue-450" : "text-slate-400 group-hover:text-white"
+                }`}
+              />
+              <span
+                className={`z-10 transition-colors ${
+                  isActive ? "text-blue-450 font-semibold" : "text-slate-400 group-hover:text-white"
+                }`}
+              >
+                {item.name}
+              </span>
             </Link>
           );
         })}
       </nav>
 
       {/* Sidebar Footer / Logout */}
-      <div className="p-4 border-t border-slate-900">
+      <div className="p-4 border-t border-white/5 bg-slate-950/20">
         <form action={logoutAction}>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
             type="submit"
-            className="w-full h-10 rounded-lg border border-slate-900 hover:border-slate-800 bg-slate-900/20 hover:bg-slate-900 text-slate-400 hover:text-white flex items-center justify-center gap-2.5 text-sm transition-all cursor-pointer font-medium"
+            className="w-full h-10 rounded-lg border border-white/5 hover:border-white/10 bg-white/5 hover:bg-white/10 text-slate-350 hover:text-white flex items-center justify-center gap-2.5 text-sm transition-all cursor-pointer font-medium"
           >
-            <LogOut className="h-4 w-4" />
+            <LogOut className="h-4 w-4 text-slate-400" />
             Keluar Sistem
-          </button>
+          </motion.button>
         </form>
       </div>
     </aside>
